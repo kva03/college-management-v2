@@ -2,7 +2,7 @@ import React from 'react'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 type Props = {}
 
-export default function StudentSoltSelect({}: Props) {
+export default function StudentSoltSelect({}: any) {
     const getSlotStatus = (dayIndex, hour) => {
         return schedule[dayIndex]?.[hour]?.status || SlotStatus.FREE;
       };
