@@ -15,8 +15,8 @@ export async function createBooking(data: {
   teacherId: string
   timeSlotId: string
   reason: string
-  requestedStartTime: Date
-  requestedEndTime: Date
+  requestedStartTime: any
+  requestedEndTime: any
 }) {
   const session = await getServerSession(authOptions)
   if (!session?.user?.email) {
