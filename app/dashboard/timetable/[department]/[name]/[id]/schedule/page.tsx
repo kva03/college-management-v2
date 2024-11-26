@@ -129,7 +129,7 @@ const StudentTeacherSchedule = ({ params }) => {
                               {timeSlot?.Booking && timeSlot.Booking.length > 0 && (
                                   <div className="text-xs mt-1">
                                  
-                                    {getCount(timeSlot.Booking, userId) ? `${getCount(timeSlot.Booking, userId)} Reverved`: ''}
+                                    {getCount(timeSlot.Booking, userId) ? `${getCount(timeSlot.Booking, userId)} Reserved`: ''}
                                     {/* Booked: {timeSlot.Booking.length} */}
                                     {timeSlot?.status != SlotStatus.FREE && timeSlot.Booking[0].student.name}
                                   </div>
