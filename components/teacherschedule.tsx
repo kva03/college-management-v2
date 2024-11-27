@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Calendar } from 'lucide-react';
-import { getTeacherSchedule, updateTeacherSlot } from '@/actions/timetable';
+import { getTeacherSchedule, updateTeacherSlot ,initializeTeacherSchedule} from '@/actions/timetable';
 import { toast } from '@/hooks/use-toast';
 
 const DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
