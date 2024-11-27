@@ -111,6 +111,12 @@ const TeacherSchedule = ({ teacherId, initialSchedule = {} }) => {
   const getSlotBookings = (dayIndex, hour) => {
     return schedule[dayIndex]?.[hour]?.bookings || [];
   };
+  useEffect(() => {
+    // Initialize schedule if empty
+    if (Object.keys(schedule).length === 0) {
+      initializeTeacherSchedule(teacherId);
+    }
+  }, [teacherId, initialSchedule]);
 
   return (
     <Card className="w-full max-w-6xl mx-auto">
