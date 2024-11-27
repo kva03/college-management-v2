@@ -48,7 +48,9 @@ const TheaterAvailability: FC<Props> = ({ theaterId }) => {
 
   // Fetch bookings for the selected date
   const fetchBookings = async (date: Date) => {
+    console.log("date",date)
     const result = await getHallBookingsForDay(theaterId, date)
+    console.log('hekle',result)
     if (result.success) {
       setEvents(convertBookingsToEvents(result.data))
     } else {
@@ -70,24 +72,21 @@ const TheaterAvailability: FC<Props> = ({ theaterId }) => {
     const startHour = start.getHours()
     const endHour = end.getHours()
 
-    // Validate booking hours (only after 5 PM and before midnight)
-    if (startHour < 17 || endHour > 23) {
-      toast.error("Bookings are only available between 5 PM and 11 PM")
-      return
-    }
+
 
     try {
       const bookingDate = startOfDay(start)
-
+      
       const result = await createHallBooking({
         theaterId,
         userId: session.user.id,
         start: startHour,
         end: endHour,
         date: bookingDate,
-        reason
+        reason,
+        selectedSlot,
       })
-
+console.log(result)
       if (result.success) {
         toast.success("Booking requested")
         fetchBookings(selectedDate)
@@ -102,28 +101,17 @@ const TheaterAvailability: FC<Props> = ({ theaterId }) => {
   }
 
   const handleSelectSlot = (slotInfo: SlotInfo) => {
+    console.log("helllo")
     if (!session?.user?.id) {
       toast.error("Please sign in to make bookings")
       return
     }
 
     const start = new Date(slotInfo.start)
-    const startHour = start.getHours()
+ 
 
-    // Prevent booking during 9-5 work hours
-    // if (startHour >= 9 && startHour < 17) {
-    //   toast.error("Bookings are not available between 9 AM and 5 PM")
-    //   return
-    // }
-    // if (startHour >= 23 && startHour < 24) {
-    //   toast.error("Bookings are not available between 9 AM and 5 PM")
-    //   return
-    // }
-    // if (startHour >= 0 && startHour < 9) {
-    //   toast.error("Bookings are not available between 9 AM and 5 PM")
-    //   return
-    // }
-
+  
+    
     // Adjust slot selection to full hours
     const end = new Date(start)
     end.setHours(start.getHours() + 1)
@@ -136,18 +124,9 @@ const TheaterAvailability: FC<Props> = ({ theaterId }) => {
   }
 
   // Set the time boundaries for the calendar
-  const minTime = setHours(setMinutes(new Date(), 0), 9) // 5 AM
+  const minTime = setHours(setMinutes(new Date(), 0), 17) // 5 AM 
   const maxTime = setHours(setMinutes(new Date(), 0), 23) // 11 PM
-  const CustomToolbar = (toolbar) => {
-    return (
-        <div className="rbc-toolbar">
-          <button onClick={() => toolbar.onNavigate('TODAY')}>Today</button>
-          <button onClick={() => toolbar.onNavigate('PREV')}>Back</button>
-          <button onClick={() => toolbar.onNavigate('NEXT')}>Next</button>
-          <span className="rbc-toolbar-label">{toolbar.label}</span>
-        </div>
-    );
-  };
+
   return (
     <main className='overflow-x-auto p-4 max-sm:pb-20'>
       <div className='min-w-[600px] w-full'>
@@ -155,29 +134,26 @@ const TheaterAvailability: FC<Props> = ({ theaterId }) => {
           defaultView="day"
           views={['day']}
           events={events}
-            localizer={localizer}
+          localizer={localizer}
           resizable={false}
           style={{ height: '100vh' }}
-          components={{
-            toolbar: CustomToolbar,
-          }}
+          min={minTime}
+          max={maxTime}
           selectable
           timeslots={1} // Set to 1 timeslot per hour
           step={60} // Set step to 60 minutes
           onSelectSlot={handleSelectSlot}
           onNavigate={(date: Date) => setSelectedDate(date)}
-          min={new Date(2024, 10, 25, 17, 0)} // Start time: 5 PM
-          max={new Date(2024, 10, 25, 23, 0)} // End time: 11 PM
           eventPropGetter={(event: CalendarEvent) => ({
             className: `status-${event.status?.toLowerCase()}`,
             style: {
-              backgroundColor: event.status === 'PENDING' ? '#FFA500' :
-                             event.status === 'APPROVED' ? '#4CAF50' :
+              backgroundColor: event.status === 'PENDING' ? '#FFA500' : 
+                             event.status === 'APPROVED' ? '#4CAF50' : 
                              event.status === 'REJECTED' ? '#F44336' : '#2196F3'
             }
           })}
         />
-
+        
         {selectedSlot && (
           <BookingDialog
             isOpen={isBookingDialogOpen}
