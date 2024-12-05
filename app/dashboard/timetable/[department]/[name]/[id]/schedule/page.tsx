@@ -90,7 +90,7 @@ const StudentTeacherSchedule = ({ params }) => {
       (obj.status === 'APPROVED' ) && obj.student?.userId === userId
     ).length;
   };
-  console.log(schedule[2]?.[9].Booking, )
+
   return (
       <Card className="w-full max-w-6xl mx-auto">
         <CardHeader>
