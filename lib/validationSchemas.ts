@@ -17,7 +17,7 @@ export const createTeacherSchema = z.object({
     //   /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()\-_=+{};:,<.>]).{8,}$/,
     //   "Password is invalid"
     // ),
-  department: z.enum(["CSE", "ECE", "HSS", "MTH", "PHY"]),
+  department: z.enum(["CSE", "ECE", "HSS", "MTH", "PHY","ME"]),
   email: z.string().email(),
   role:z.enum(["TEACHER"])
 });
