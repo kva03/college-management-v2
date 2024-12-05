@@ -40,12 +40,9 @@ export async function updateTeacherSlot(
   try {
     const { dayOfWeek, hour, status } = data;
     
-    // Create date objects for start and end times
-    const startTime = new Date(0);
-    startTime.setHours(hour, 0, 0, 0);
-    
-    const endTime = new Date();
-    endTime.setHours(hour + 1, 0, 0, 0);
+    // Create consistent date objects for start and end times
+    const startTime = new Date(1970, 0, 1, hour, 0, 0, 0);
+    const endTime = new Date(1970, 0, 1, hour + 1, 0, 0, 0);
 
     // Update or create the time slot with status
     const timeSlot = await prisma.timeSlot.upsert({
