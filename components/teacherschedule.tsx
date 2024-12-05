@@ -76,46 +76,38 @@ const TeacherSchedule = ({ teacherId, initialSchedule = {} }) => {
       setIsPending(false);
     }
   };
-  const TeacherSchedule = ({ teacherId, initialSchedule = {} }) => {
-    const [schedule, setSchedule] = useState({});
-    const [isPending, setIsPending] = useState(false);
-    const [isInitialized, setIsInitialized] = useState(false);
-  
-    useEffect(() => {
-      const fetchTeacherSchedule = async () => {
-        try {
-          const timeSlots = await getTeacherSchedule(teacherId);
-          const formattedSchedule = timeSlots.reduce((acc, slot) => {
-            if (!acc[slot.dayOfWeek]) {
-              acc[slot.dayOfWeek] = {};
-            }
-  
-            const hour = new Date(slot.startTime).getUTCHours();
-            acc[slot.dayOfWeek][hour] = {
-              ...slot,
-              status: slot.status
-            };
-  
-            return acc;
-          }, {});
-  
-          setSchedule(formattedSchedule);
-  
-          // Initialize schedule only if it's empty and hasn't been initialized before
-          if (Object.keys(formattedSchedule).length === 0) {
+  useEffect(() => {
+    const fetchTeacherSchedule = async () => {
+      try {
+        const timeSlots = await getTeacherSchedule(teacherId);
+        
+        const formattedSchedule = timeSlots.reduce((acc, slot) => {
+          if (!acc[slot.dayOfWeek]) {
+            acc[slot.dayOfWeek] = {};
+          }
+    
+          // Use getUTC methods to ensure consistent hour parsing
+          const hour = new Date(slot.startTime).getUTCHours();
+          acc[slot.dayOfWeek][hour] = {
+            ...slot,
+            status: slot.status
+          };
+    
+          return acc;
+        }, {});
+    
+        setSchedule(formattedSchedule);
+           // Initialize schedule only if it's empty and hasn't been initialized before
+           if (Object.keys(formattedSchedule).length === 0) {
             await initializeTeacherSchedule(teacherId);
       
           }
-        } catch (error) {
-          console.error('Error fetching teacher schedule:', error);
-        }
-      };
-  
-      fetchTeacherSchedule();
-    }, [teacherId]); // Add isInitialized to dependency array
-  
-    // Rest of the component remains the same...
-  };
+      } catch (error) {
+        console.error('Error fetching teacher schedule:', error);
+      }
+    };
+    fetchTeacherSchedule();
+  }, [teacherId]);
   const getSlotStatus = (dayIndex, hour) => {
     return schedule[dayIndex]?.[hour]?.status ;
   };
@@ -128,7 +120,7 @@ const TeacherSchedule = ({ teacherId, initialSchedule = {} }) => {
   //   if (Object.keys(schedule).length === 0) {
   //     initializeTeacherSchedule(teacherId);
   //   }
-  // }, []);
+  // }, [teacherId, initialSchedule]);
 
   return (
     <Card className="w-full max-w-6xl mx-auto">
