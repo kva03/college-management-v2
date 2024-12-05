@@ -116,7 +116,7 @@ const TeacherSchedule = ({ teacherId, initialSchedule = {} }) => {
     if (Object.keys(schedule).length === 0) {
       initializeTeacherSchedule(teacherId);
     }
-  }, [teacherId, initialSchedule]);
+  }, []);
 
   return (
     <Card className="w-full max-w-6xl mx-auto">
