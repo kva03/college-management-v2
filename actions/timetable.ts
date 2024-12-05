@@ -41,7 +41,7 @@ export async function updateTeacherSlot(
     const { dayOfWeek, hour, status } = data;
     
     // Create date objects for start and end times
-    const startTime = new Date();
+    const startTime = new Date(0);
     startTime.setHours(hour, 0, 0, 0);
     
     const endTime = new Date();
@@ -80,31 +80,31 @@ export async function updateTeacherSlot(
 
 export async function initializeTeacherSchedule(teacherId: string) {
   try {
-    const days = Array.from({ length: 7 }, (_, i) => i); // 0-6 for Sunday-Saturday
-    const hours = Array.from({ length: 9 }, (_, i) => i + 9); // 9-17 (9 AM to 5 PM)
+    const days = Array.from({ length: 7 }, (_, i) => i);
+    const hours = Array.from({ length: 9 }, (_, i) => i + 9);
 
     const slots = [];
 
     for (const day of days) {
       for (const hour of hours) {
-        const startTime = new Date();
-        startTime.setHours(hour, 0, 0, 0);
+        const baseDate = new Date(0);
+        baseDate.setHours(hour, 0, 0, 0);
         
-        const endTime = new Date();
-        endTime.setHours(hour + 1, 0, 0, 0);
+        const startTime = new Date(baseDate);
+        const endTime = new Date(baseDate);
+        endTime.setHours(hour + 1);
 
         slots.push({
           teacherId,
           dayOfWeek: day,
           startTime,
           endTime,
-          status: 'FREE' as SlotStatus,
+          status: 'OTHER' as SlotStatus,
           isRecurring: true,
         });
       }
     }
 
-    // Use transaction to ensure all slots are created
     await prisma.$transaction(
       slots.map((slot) =>
         prisma.timeSlot.upsert({
@@ -116,9 +116,7 @@ export async function initializeTeacherSchedule(teacherId: string) {
               endTime: slot.endTime,
             },
           },
-          update: {
-            status: slot.status,  // Update status if slot already exists
-          },
+          update: { status: slot.status },
           create: slot,
         })
       )

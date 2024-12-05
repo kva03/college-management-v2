@@ -47,7 +47,7 @@ const StudentTeacherSchedule = ({ params }) => {
           acc[slot.dayOfWeek] = {};
         }
 
-        const hour = new Date(slot.startTime).getHours();
+        const hour = new Date(slot.startTime).getUTCHours();
         acc[slot.dayOfWeek][hour] = {
           ...slot,
           status: slot.status
