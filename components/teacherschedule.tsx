@@ -112,7 +112,7 @@ const TeacherSchedule = ({ teacherId, initialSchedule = {} }) => {
       };
   
       fetchTeacherSchedule();
-    }, [teacherId, isInitialized]); // Add isInitialized to dependency array
+    }, [teacherId]); // Add isInitialized to dependency array
   
     // Rest of the component remains the same...
   };
